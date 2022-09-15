@@ -125,18 +125,23 @@ export class VideosController {
 
 	static async removeOneVideo(req: Request<{ id: string }>, res: Response<IVideo>) {
 		try {
-			let id = req.params.id;
-			if (!id) {
-				res.sendStatus(404);
+			let id = +req.params.id;
+			if (typeof id !== 'number') {
+				return res.sendStatus(404);
 			}
 
-			let newVideos = VIDEOS.filter(video => video.id != Number(id));
+			const video = VIDEOS.find(video => video.id === id);
 
-			if(newVideos.length < VIDEOS.length){
+			if(video){
+				VIDEOS = VIDEOS.filter(video => video.id !== id);
 				return res.sendStatus(204);
 			} else {
 				res.sendStatus(404);
-			}	
+			}
+			// if (!video) return res.sendStatus(404)
+
+			// VIDEOS = VIDEOS.filter(video => video.id !== id);
+			// return res.sendStatus(204)
 		} catch (error) {
 			return res.sendStatus(500);
 		}
