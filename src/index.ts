@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => res.send("Hello friends!"));
+app.get('/', (req, res) => res.send("Hello friends!!"));
 app.get('/videos', VideosController.getAllVideos);
 app.get('/videos/:id', VideosController.getOneVideo);
 app.post('/videos', validateCreateVideo, checkError, VideosController.createVideo);
