@@ -117,7 +117,7 @@ export class VideosController {
 			})
 
 			let updatedVideo = VIDEOS.find(video => video.id == Number(videoId));
-			res.json(updatedVideo);
+			res.status(204).send(updatedVideo);
 		} catch (error) {
 			res.sendStatus(500);
 		}

@@ -1,9 +1,12 @@
 import { body} from 'express-validator';
 
+let Resolutions = [ "P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P2160"];
+
 export const validateCreateVideo = [
 	body('author', {field: "author", message: "Укажите автора"}).isLength({max: 20}).isString(),
 	body('title', {field: "title", message: "Укажите заголовок"}).isLength({max: 40}).isString(),
 	body('availableResolutions', {field: "availableResolutions", message: "Укажите availableResolutions"}).isArray({min: 1}),
+	body('availableResolutions', {field: "availableResolutions", message: "Укажите availableResolutions"}).isIn(Resolutions),
 ];
 
 export const validateUpdateVideo = [
