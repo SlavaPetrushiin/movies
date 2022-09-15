@@ -130,8 +130,13 @@ export class VideosController {
 				res.sendStatus(404);
 			}
 
-			VIDEOS = VIDEOS.filter(video => video.id != Number(id));
-			return res.sendStatus(204);
+			let newVideos = VIDEOS.filter(video => video.id != Number(id));
+
+			if(newVideos.length < VIDEOS.length){
+				return res.sendStatus(204);
+			} else {
+				res.sendStatus(404);
+			}	
 		} catch (error) {
 			return res.sendStatus(500);
 		}
