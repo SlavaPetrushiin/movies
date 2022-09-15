@@ -78,7 +78,7 @@ export class VideosController {
 				id: new Date().getMilliseconds(),
 				title,
 				author,
-				canBeDownloaded: false,
+				canBeDownloaded: true,
 				minAgeRestriction: null,
 				createdAt: new Date().toISOString(),
 				publicationDate: add(new Date(), {days: 1}).toISOString(),
