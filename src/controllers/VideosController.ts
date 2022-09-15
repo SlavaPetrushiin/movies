@@ -1,6 +1,19 @@
 import { Request, Response } from 'express';
 
-let VIDEOS = [] as IVideo[];
+let VIDEOS = [
+	{
+		id: new Date().getMilliseconds(),
+		title: "Online Cinema",
+		author: "SLava",
+		canBeDownloaded: true,
+		minAgeRestriction: 18,
+		createdAt: new Date().toISOString(),
+		publicationDate: new Date().toISOString(),
+		availableResolutions: [
+			"P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P2160"
+		],
+	}
+] as IVideo[];
 
 interface IVideo {
 	id: number
@@ -8,8 +21,8 @@ interface IVideo {
 	author: string
 	canBeDownloaded: boolean
 	minAgeRestriction: null | number
-	createdAt: Date
-	publicationDate: Date
+	createdAt: string
+	publicationDate: string
 	availableResolutions: string[];
 }
 
@@ -23,40 +36,40 @@ interface IUpdateVideo extends Request {
 	title: string;
 	author: string;
 	availableResolutions: string[];
-  canBeDownloaded: boolean;  
+	canBeDownloaded: boolean;
 	minAgeRestriction: number;
-  publicationDate: Date;
+	publicationDate: string;
 }
 
 export class VideosController {
-	static async getAllVideos(req: Request, res: Response<IVideo[]>){
+	static async getAllVideos(req: Request, res: Response<IVideo[]>) {
 		try {
 			return res.status(200).json(VIDEOS);
 		} catch (error) {
-			
+
 		}
 	}
 
-	static async getOneVideo(req: Request<{id: string}>, res: Response<IVideo>){
+	static async getOneVideo(req: Request<{ id: string }>, res: Response<IVideo>) {
 		try {
 			let id = req.params.id;
-			if(!id){
+			if (!id) {
 				res.sendStatus(404);
 			}
 
 			let video = VIDEOS.find(video => video.id == Number(id));
 
-			if(!video){
+			if (!video) {
 				res.sendStatus(404);
-			}			
-			
+			}
+
 			return res.json(video);
 		} catch (error) {
 			return res.sendStatus(500);
 		}
 	}
 
-	static async createVideo (req: Request<{}, {}, ICreateVideo, {}>, res: Response<IVideo>) {
+	static async createVideo(req: Request<{}, {}, ICreateVideo, {}>, res: Response<IVideo>) {
 		try {
 			let { author, title, availableResolutions } = req.body;
 			let indexID = VIDEOS.length;
@@ -67,8 +80,8 @@ export class VideosController {
 				availableResolutions,
 				canBeDownloaded: true,
 				minAgeRestriction: null,
-				createdAt: new Date(),
-				publicationDate: new Date()
+				createdAt: new Date().toISOString(),
+				publicationDate: new Date().toISOString()
 			})
 
 			console.log(VIDEOS);
@@ -82,25 +95,25 @@ export class VideosController {
 		}
 	}
 
-	static async updateVideo (req: Request<{id: string}, {}, IUpdateVideo, {}>, res: Response) {
+	static async updateVideo(req: Request<{ id: string }, {}, IUpdateVideo, {}>, res: Response) {
 		try {
 			let videoId = req.params.id;
-			let { author, title, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate} = req.body;
+			let { author, title, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate } = req.body;
 
 			let foundedVideo = VIDEOS.find(video => video.id == Number(videoId));
 
-			if(!foundedVideo){
+			if (!foundedVideo) {
 				return res.sendStatus(404);
 			}
 
 			VIDEOS = VIDEOS.map(video => {
-				if(video.id == +videoId){
+				if (video.id == +videoId) {
 					return {
 						...video,
 						author, title, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate
 					}
 				}
-				return {...video};
+				return { ...video };
 			})
 
 			let updatedVideo = VIDEOS.find(video => video.id == Number(videoId));
@@ -110,23 +123,23 @@ export class VideosController {
 		}
 	}
 
-	static async removeOneVideo(req: Request<{id: string}>, res: Response<IVideo>){
+	static async removeOneVideo(req: Request<{ id: string }>, res: Response<IVideo>) {
 		try {
 			let id = req.params.id;
-			if(!id){
+			if (!id) {
 				res.sendStatus(404);
 			}
 
-			VIDEOS = VIDEOS.filter(video => video.id != Number(id));			
+			VIDEOS = VIDEOS.filter(video => video.id != Number(id));
 			return res.sendStatus(204);
 		} catch (error) {
 			return res.sendStatus(500);
 		}
 	}
 
-	static async removeAllVideos(req: Request, res: Response){
+	static async removeAllVideos(req: Request, res: Response) {
 		try {
-			VIDEOS = [];			
+			VIDEOS = [];
 			return res.sendStatus(204);
 		} catch (error) {
 			return res.sendStatus(500);
