@@ -13,7 +13,7 @@ app.get('/videos/:id', VideosController.getOneVideo);
 app.post('/videos', validateCreateVideo, checkError, VideosController.createVideo);
 app.put('/videos/:id', validateUpdateVideo, checkError, VideosController.updateVideo);
 app.delete('/videos/:id', VideosController.removeOneVideo);
-app.delete('/all-data', VideosController.removeAllVideos);
+app.delete('/testing/all-data', VideosController.removeAllVideos);
 
 app.use((req: Request, res: Response) => {
   res.type('text/plain');
