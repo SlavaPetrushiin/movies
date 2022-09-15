@@ -5,8 +5,7 @@ let Resolutions = [ "P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P
 export const validateCreateVideo = [
 	body('author', {field: "author", message: "Укажите автора"}).isLength({max: 20}).isString(),
 	body('title', {field: "title", message: "Укажите заголовок"}).isLength({max: 40}).isString(),
-	body('availableResolutions', {field: "availableResolutions", message: "Укажите availableResolutions"}).isArray({min: 1}),
-	body('availableResolutions', {field: "availableResolutions", message: "Укажите availableResolutions"}).isIn(Resolutions),
+	body('availableResolutions', {field: "availableResolutions", message: "Укажите availableResolutions"}).isIn(Resolutions).isArray({min: 1}),
 ];
 
 export const validateUpdateVideo = [
