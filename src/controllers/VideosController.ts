@@ -87,9 +87,9 @@ export class VideosController {
 			let videoId = req.params.id;
 			let { author, title, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate} = req.body;
 
-			let video = VIDEOS.find(video => video.id == Number(videoId));
+			let foundedVideo = VIDEOS.find(video => video.id == Number(videoId));
 
-			if(!video){
+			if(!foundedVideo){
 				return res.sendStatus(404);
 			}
 
@@ -100,13 +100,13 @@ export class VideosController {
 						author, title, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate
 					}
 				}
-
 				return {...video};
 			})
 
-
+			let updatedVideo = VIDEOS.find(video => video.id == Number(videoId));
+			res.json(updatedVideo);
 		} catch (error) {
-			res.sendStatus(500)
+			res.sendStatus(500);
 		}
 	}
 
@@ -118,6 +118,15 @@ export class VideosController {
 			}
 
 			VIDEOS = VIDEOS.filter(video => video.id != Number(id));			
+			return res.sendStatus(204);
+		} catch (error) {
+			return res.sendStatus(500);
+		}
+	}
+
+	static async removeAllVideos(req: Request, res: Response){
+		try {
+			VIDEOS = [];			
 			return res.sendStatus(204);
 		} catch (error) {
 			return res.sendStatus(500);
