@@ -78,11 +78,11 @@ export class VideosController {
 				id: new Date().getMilliseconds(),
 				title,
 				author,
-				availableResolutions,
-				canBeDownloaded: true,
+				canBeDownloaded: false,
 				minAgeRestriction: null,
 				createdAt: new Date().toISOString(),
-				publicationDate: add(new Date(), {"days": 1}).toISOString()
+				publicationDate: add(new Date(), {days: 1}).toISOString(),
+				availableResolutions
 			})
 
 			console.log(VIDEOS);
