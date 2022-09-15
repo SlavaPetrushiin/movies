@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import add from 'date-fns/add';
 
 let VIDEOS = [
 	{
@@ -69,7 +70,7 @@ export class VideosController {
 		}
 	}
 
-	static async createVideo(req: Request<{}, {}, ICreateVideo, {}>, res: Response<IVideo>) {
+	static async createVideo(req: Request<{}, {}, ICreateVideo, {}>, res: Response<IVideo | string>) {
 		try {
 			let { author, title, availableResolutions } = req.body;
 			let indexID = VIDEOS.length;
@@ -81,17 +82,16 @@ export class VideosController {
 				canBeDownloaded: true,
 				minAgeRestriction: null,
 				createdAt: new Date().toISOString(),
-				publicationDate: new Date().toISOString()
+				publicationDate: add(new Date(), {"days": 1}).toISOString()
 			})
 
 			console.log(VIDEOS);
 
-			res
-				.status(201)
-				.json(VIDEOS[indexID])
+			return res.status(201).send(VIDEOS[indexID])
 
 		} catch (error) {
-			res.status
+			console.log('VideosController -> createVideo', error)
+			return res.send('server error')
 		}
 	}
 
