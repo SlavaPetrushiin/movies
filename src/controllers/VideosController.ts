@@ -1,21 +1,16 @@
 import { Request, Response } from 'express';
 import add from 'date-fns/add';
 
-let VIDEOS = [
-	{
-		id: new Date().getMilliseconds(),
-		title: "Online Cinema",
-		author: "SLava",
-		canBeDownloaded: true,
-		minAgeRestriction: 18,
-		createdAt: new Date().toISOString(),
-		publicationDate: new Date().toISOString(),
-		availableResolutions: [
-			"P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P2160"
-		],
-	}
-] as IVideo[];
-
+export enum AvailableResolutions {
+	P144 = "P144",
+	P240 = "P240",
+	P360 = "P360",
+	P480 = "P480",
+	P720 = "P720",
+	P1080 = "P1080",
+	P1440 = "P1440",
+	P2160 = "P2160"
+}
 interface IVideo {
 	id: number
 	title: string
@@ -24,23 +19,24 @@ interface IVideo {
 	minAgeRestriction: null | number
 	createdAt: string
 	publicationDate: string
-	availableResolutions: string[];
+	availableResolutions: Array<AvailableResolutions> ;
 }
 
-interface ICreateVideo extends Request {
-	title: string;
-	author: string;
-	availableResolutions: string[];
-}
+type RequestCreateVideo = Omit<IVideo, 'id' | 'canBeDownloaded' | 'minAgeRestriction' | 'createdAt' | 'publicationDate'>;
+type RequestUpdateVideo = Omit<IVideo, 'id' | 'createdAt'>;
 
-interface IUpdateVideo extends Request {
-	title: string;
-	author: string;
-	availableResolutions: string[];
-	canBeDownloaded: boolean;
-	minAgeRestriction: number;
-	publicationDate: string;
-}
+let VIDEOS: IVideo[]  = [
+	{
+		id: new Date().getMilliseconds(),
+		title: "Online Cinema",
+		author: "SLava",
+		canBeDownloaded: true,
+		minAgeRestriction: 18,
+		createdAt: new Date().toISOString(),
+		publicationDate: new Date().toISOString(),
+		availableResolutions: Object.values(AvailableResolutions),
+	}
+];
 
 export class VideosController {
 	static async getAllVideos(req: Request, res: Response<IVideo[]>) {
@@ -70,7 +66,7 @@ export class VideosController {
 		}
 	}
 
-	static async createVideo(req: Request<{}, {}, ICreateVideo, {}>, res: Response<IVideo | string>) {
+	static async createVideo(req: Request<{}, {}, RequestCreateVideo, {}>, res: Response<IVideo | string>) {
 		try {
 			let { author, title, availableResolutions } = req.body;
 			let indexID = VIDEOS.length;
@@ -81,21 +77,18 @@ export class VideosController {
 				canBeDownloaded: false,
 				minAgeRestriction: null,
 				createdAt: new Date().toISOString(),
-				publicationDate: add(new Date(), {days: 1}).toISOString(),
+				publicationDate: add(new Date(), { days: 1 }).toISOString(),
 				availableResolutions
 			})
 
-			console.log(VIDEOS);
-
-			return res.status(201).send(VIDEOS[indexID])
-
+			return res.status(201).send(VIDEOS[indexID]);
 		} catch (error) {
-			console.log('VideosController -> createVideo', error)
+			console.log('VideosController -> createVideo', error);
 			return res.send('server error')
 		}
 	}
 
-	static async updateVideo(req: Request<{ id: string }, {}, IUpdateVideo, {}>, res: Response) {
+	static async updateVideo(req: Request<{ id: string }, {}, RequestUpdateVideo, {}>, res: Response) {
 		try {
 			let videoId = req.params.id;
 			let { author, title, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate } = req.body;
@@ -132,7 +125,7 @@ export class VideosController {
 
 			const video = VIDEOS.find(video => video.id === id);
 
-			if(video){
+			if (video) {
 				VIDEOS = VIDEOS.filter(video => video.id !== id);
 				return res.sendStatus(204);
 			} else {

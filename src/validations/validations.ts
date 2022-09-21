@@ -1,12 +1,12 @@
-import e from 'express';
+import { AvailableResolutions } from './../controllers/VideosController';
 import { body, check} from 'express-validator';
 
-let Resolutions = [ "P144", "P240", "P360", "P480", "P720", "P1080", "P1440", "P2160"];
+let Resolutions = Object.values(AvailableResolutions);
 
 export const validateCreateVideo = [
 	body('author', {field: "author", message: "Укажите автора"}).isLength({max: 20}).isString(),
 	body('title', {field: "title", message: "Укажите заголовок"}).isLength({max: 40}).isString(),
-	body('availableResolutions', {field: "availableResolutions", message: "Укажите разрешение"}).custom((element) => element.every((el: any ) => Resolutions.includes(el)))
+	body('availableResolutions', {field: "availableResolutions", message: "Укажите разрешение"}).custom((element: Array<AvailableResolutions>) => element.every(el => Resolutions.includes(el)))
 ];
 
 export const validateUpdateVideo = [
